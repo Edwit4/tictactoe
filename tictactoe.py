@@ -74,7 +74,7 @@ class TicTacToeGame(BoxLayout):
             self.pieces = self.pieces.reshape((3,3,2))
 
             # Check if somebody won (if a row / col / diag sums to 3 then
-            # the whichever piece summed to 3 has won)
+            # whichever piece's representation has summed to 3 has won)
             col_sums = np.sum(self.pieces,axis=0)
             row_sums = np.sum(self.pieces,axis=1)
             diag_sums = np.array([np.trace(self.pieces), 
@@ -86,12 +86,14 @@ class TicTacToeGame(BoxLayout):
                 elif np.array_equal(vec, np.array([0,3])):
                     self.gameover('O wins')
 
-            # If everything sums to 2 then there is a tie
-            uniques, counts = np.unique(sums,return_counts=True)
-            twos = np.isin(uniques,2)
-            if np.any(twos):
-                if counts[twos] == 8:
-                    self.gameover('Tie')
+            # If the middle is filled and everything sums to 2 then
+            # there is a tie
+            if not np.array_equal(self.pieces[1][1], np.array([0,0])):
+                uniques, counts = np.unique(sums,return_counts=True)
+                twos = np.isin(uniques,2)
+                if np.any(twos):
+                    if counts[twos] == 8:
+                        self.gameover('Tie')
 
             # Update the turn number
             self.turn += 1
